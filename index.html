@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuestionario: Percepciones sobre las SPA como CSC — Miguel Ángel Orrego Rodríguez</title>
+<style>
+:root{--primario:#1e3a8a;--primario2:#2563eb;--suave:#e8eefb;--exito:#059669;--error:#dc2626;--gris:#64748b;--borde:#cbd5e1;--fondo:#eef2f7}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--fondo);color:#1e293b;padding:12px;line-height:1.55}
+.contenedor{max-width:780px;margin:0 auto}
+header{background:linear-gradient(140deg,#1e3a8a,#0f766e);color:#fff;border-radius:14px 14px 0 0;padding:26px 22px;text-align:center}
+header .linea{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;opacity:.85}
+header .investigador{font-size:1.15rem;font-weight:700;margin-top:6px}
+header .cargo{font-size:.85rem;opacity:.9;margin-bottom:14px}
+header h1{font-size:1.02rem;font-weight:600;line-height:1.45;border-top:1px solid rgba(255,255,255,.3);padding-top:14px}
+.tarjeta{background:#fff;border-radius:0 0 14px 14px;box-shadow:0 2px 12px rgba(15,23,42,.12)}
+.seccion{padding:24px 22px}
+.seccion h2{font-size:1.1rem;margin-bottom:12px;color:var(--primario)}
+.intro p{margin-bottom:12px;font-size:.94rem;text-align:justify}
+.definicion{background:var(--suave);border-left:4px solid var(--primario2);padding:12px 14px;border-radius:0 8px 8px 0;font-size:.9rem;margin:14px 0;text-align:justify}
+.derechos{margin:12px 0 6px 20px;font-size:.92rem}
+.derechos li{margin-bottom:6px}
+.tiempo{display:inline-block;background:#fef3c7;color:#92400e;padding:6px 12px;border-radius:20px;font-size:.85rem;font-weight:600;margin:10px 0}
+.contacto-previo{font-size:.82rem;color:var(--gris);margin-top:14px;border-top:1px solid var(--borde);padding-top:10px}
+.consentimiento{display:flex;gap:10px;align-items:flex-start;background:var(--suave);border:1.5px solid var(--primario2);border-radius:10px;padding:14px;margin:16px 0;font-weight:600;cursor:pointer;font-size:.95rem}
+.consentimiento input{width:20px;height:20px;accent-color:var(--primario);flex-shrink:0;margin-top:2px}
+.btn{display:block;width:100%;padding:14px;border:none;border-radius:10px;font-size:1.02rem;font-weight:700;cursor:pointer}
+.btn-primario{background:var(--primario);color:#fff}
+.btn-primario:hover:enabled{background:#16327a}
+.btn:disabled{background:#94a3b8;cursor:not-allowed}
+.barra-fija{position:sticky;top:0;z-index:60;background:#fff;border-bottom:1px solid var(--borde);padding:10px 22px}
+.progreso-info{display:flex;justify-content:space-between;font-size:.8rem;color:var(--gris);margin-bottom:6px;gap:10px}
+.mini-leyenda{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.progreso-pista{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+.progreso-relleno{height:100%;width:0;background:linear-gradient(90deg,var(--primario2),#0d9488);border-radius:4px;transition:width .3s}
+.instrucciones{background:var(--suave);border-radius:10px;padding:14px 16px;margin:16px 0;font-size:.9rem}
+.escala-chips{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.chip{display:flex;gap:10px;align-items:center}
+.chip b{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:50%;background:var(--primario);color:#fff;font-size:.85rem;flex-shrink:0}
+.dimension{border:1px solid var(--borde);border-radius:12px;margin:18px 0;overflow:hidden;background:#fff}
+.dimension-cabecera{background:#f1f5f9;padding:12px 16px;border-bottom:1px solid var(--borde)}
+.dimension-cabecera h3{font-size:.98rem;color:var(--primario)}
+.nota{font-size:.82rem;color:var(--gris);font-style:italic;margin-top:6px;text-align:justify}
+.dimension-cuerpo{padding:6px 16px 14px}
+.campo{padding:12px 0;border-bottom:1px dashed var(--borde)}
+.campo:last-child{border-bottom:none}
+.campo-etiqueta{font-weight:600;font-size:.95rem;margin-bottom:10px}
+.req{color:var(--error)}
+.opciones{display:flex;flex-wrap:wrap;gap:8px}
+.opcion{display:flex;align-items:center;gap:8px;border:1.5px solid var(--borde);border-radius:999px;padding:8px 14px;cursor:pointer;font-size:.9rem;background:#fff;transition:.15s}
+.opcion:hover{border-color:var(--primario2)}
+.opcion input{accent-color:var(--primario);width:16px;height:16px}
+.opcion:has(input:checked){background:var(--suave);border-color:var(--primario2)}
+input[type=text],textarea{width:100%;padding:11px 13px;border:1.5px solid var(--borde);border-radius:8px;font-size:.95rem;font-family:inherit}
+textarea{resize:vertical;min-height:100px}
+input:focus,textarea:focus{outline:none;border-color:var(--primario2);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+.item{padding:14px 0;border-bottom:1px dashed var(--borde)}
+.item:last-child{border-bottom:none}
+.item-texto{font-size:.93rem;margin-bottom:10px}
+.item-num{font-weight:800;color:var(--primario);margin-right:4px}
+.likert{display:flex;gap:6px}
+.likert input{display:none}
+.likert label{flex:1;text-align:center;padding:10px 0;border:1.5px solid var(--borde);border-radius:8px;font-weight:700;font-size:.95rem;cursor:pointer;background:#fff;transition:.15s;color:#334155}
+.likert label:hover{border-color:var(--primario2);color:var(--primario2)}
+.likert input:checked+label{background:var(--primario);border-color:var(--primario);color:#fff}
+.item.invalida .likert label{border-color:var(--error)}
+.error-msg{display:none;color:var(--error);font-size:.82rem;margin-top:8px}
+.invalida .error-msg{display:block}
+.invalida .campo-etiqueta,.invalida .item-texto{color:var(--error)}
+.gracias{text-align:center;padding:40px 24px}
+.gracias .icono{font-size:3.2rem}
+.gracias h2{color:var(--exito);margin:10px 0}
+.contacto{margin-top:18px;background:#f8fafc;border:1px solid var(--borde);border-radius:10px;padding:16px;font-size:.9rem;display:inline-block;text-align:left;line-height:1.7}
+@media(max-width:480px){
+body{padding:6px}
+.seccion,.barra-fija{padding-left:14px;padding-right:14px}
+.seccion{padding-top:18px;padding-bottom:18px}
+.mini-leyenda{display:none}
+header{padding:20px 14px}
+.likert label{padding:12px 0;font-size:1rem}
+}
+</style>
+</head>
+<body>
+<div class="contenedor">
+
+  <header>
+    <p class="linea">Universidad de Antioquia · Investigación doctoral</p>
+    <p class="investigador">MIGUEL ÁNGEL ORREGO RODRÍGUEZ</p>
+    <p class="cargo">Investigador responsable — Aspirante a Doctorado</p>
+    <h1>Percepciones de los estudiantes acerca de las sustancias psicoactivas (SPA) y su integración como cuestiones sociocientíficas (CSC) en la formación de Química Orgánica y Bioquímica</h1>
+  </header>
+
+  <div class="tarjeta">
+
+    <!-- ════════ VISTA 1: CONSENTIMIENTO ════════ -->
+    <section class="seccion" id="pantalla-consentimiento">
+      <div class="intro">
+        <h2>Estimado(a) estudiante:</h2>
+        <p>El presente cuestionario tiene como propósito analizar las percepciones de los estudiantes sobre las sustancias psicoactivas (SPA) de uso frecuente (legales e ilegales): <em>Cannabis sativa</em>, alcohol etílico, <em>Nicotiana tabacum</em> y cocaína, desde un enfoque contextualizado que las relaciona como cuestiones sociocientíficas (CSC), y su posible integración en los procesos de enseñanza-aprendizaje de las asignaturas de Química Orgánica y Bioquímica en la educación superior.</p>
+        <div class="definicion">
+          Las cuestiones sociocientíficas (CSC) son problemas complejos y controversiales que presentan una base científica o tecnológica, pero cuyas soluciones o impactos generan debate al involucrar factores éticos, políticos, económicos, sociales y ambientales (Torres Merchán et&nbsp;al., 2023).
+        </div>
+        <p><strong>Sus derechos como participante:</strong></p>
+        <ul class="derechos">
+          <li>Su participación es voluntaria y puede retirarse en cualquier momento.</li>
+          <li>La información recolectada será tratada de manera confidencial y anónima.</li>
+          <li>Los datos serán utilizados exclusivamente con fines académicos e investigativos.</li>
+          <li>No existen riesgos previsibles asociados a su participación.</li>
+        </ul>
+        <span class="tiempo">⏱️ Tiempo estimado de respuesta: 15–20 minutos</span>
+
+        <label class="consentimiento">
+          <input type="checkbox" id="check-consentimiento">
+          <span>Acepto participar voluntariamente en esta investigación</span>
+        </label>
+
+        <button class="btn btn-primario" id="btn-comenzar" disabled>Comenzar cuestionario</button>
+
+        <p class="contacto-previo">
+          Investigador responsable: Miguel Ángel Orrego Rodríguez · Universidad de Antioquia ·
+          miguel.orrego@udea.edu.co
+        </p>
+      </div>
+    </section>
+
+    <!-- ════════ VISTA 2: CUESTIONARIO ════════ -->
+    <section id="pantalla-formulario" style="display:none">
+      <div class="barra-fija">
+        <div class="progreso-info">
+          <span id="texto-progreso">0 de 0 preguntas respondidas</span>
+          <span class="mini-leyenda">1 = Totalmente en desacuerdo ··· 5 = Totalmente de acuerdo</span>
+        </div>
+        <div class="progreso-pista"><div class="progreso-relleno" id="progreso-relleno"></div></div>
+      </div>
+
+      <div class="seccion">
+        <div class="instrucciones">
+          <strong>Instrucciones:</strong> A continuación encontrará una serie de afirmaciones.
+          Seleccione el número que corresponde a su nivel de acuerdo o desacuerdo, según la siguiente escala:
+          <div class="escala-chips">
+            <div class="chip"><b>1</b> Totalmente en desacuerdo</div>
+            <div class="chip"><b>2</b> En desacuerdo</div>
+            <div class="chip"><b>3</b> Ni de acuerdo ni en desacuerdo</div>
+            <div class="chip"><b>4</b> De acuerdo</div>
+            <div class="chip"><b>5</b> Totalmente de acuerdo</div>
+          </div>
+        </div>
+
+        <form id="formulario" novalidate autocomplete="off">
+          <!-- El contenido se genera automáticamente con el JS de abajo -->
+        </form>
+      </div>
+    </section>
+
+    <!-- ════════ VISTA 3: AGRADECIMIENTO ════════ -->
+    <section class="gracias" id="pantalla-gracias" style="display:none">
+      <div class="icono">✅</div>
+      <h2>¡Gracias por su participación!</h2>
+      <p>Agradecemos sinceramente su participación y el tiempo dedicado para responder este cuestionario.<br>Sus respuestas son fundamentales para esta investigación.</p>
+      <div class="contacto">
+        <strong>Investigador responsable:</strong><br>
+        Miguel Ángel Orrego Rodríguez<br>
+        Universidad de Antioquia<br>
+        miguel.orrego@udea.edu.co
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// 1) ÚNICA CONFIGURACIÓN NECESARIA: pegue aquí la URL de su Apps Script (Paso A-4)
+const URL_SCRIPT = 'PEGA_AQUI_LA_URL_DEL_SCRIPT';
+
+// 2) Escala Likert
+const ESCALA = ['Totalmente en desacuerdo','En desacuerdo','Ni de acuerdo ni en desacuerdo','De acuerdo','Totalmente de acuerdo'];
+
+// 3) Dimensión I. Datos generales
+const DATOS_GENERALES = [
+  { tipo:'texto',  etiqueta:'Programa académico', obligatoria:true,  placeholder:'Escriba su programa académico' },
+  { tipo:'opcion', etiqueta:'Nivel educativo',    obligatoria:true,  opciones:['Pregrado','Posgrado'] },
+  { tipo:'opcion', etiqueta:'Asignatura',         obligatoria:true,  opciones:['Química Orgánica','Bioquímica','Ambas'] },
+  { tipo:'texto',  etiqueta:'Semestre',           obligatoria:true,  placeholder:'Ej.: 4' },
+  { tipo:'opcion', etiqueta:'Rango de edad',      obligatoria:true,  opciones:['17-19','20-22','23-25','26 o más'] },
+  { tipo:'opcion', etiqueta:'Sexo / Género',      obligatoria:true,  opciones:['Femenino','Masculino','Otro','Prefiero no responder'] }
+];
+
+// 4) Dimensiones II a VII (ítems Likert — numeración original del instrumento)
+const DIMENSIONES = [
+  { num:'II', titulo:'Conocimiento científico autopercibido sobre las SPA',
+    nota:'Se entiende por conocimiento científico un conjunto organizado, verificable y sistemático de saberes que se adquieren mediante un proceso metódico basado en la observación, el estudio, la experimentación y el análisis de fenómenos (Fernández, 2023).',
+    items:[
+      { id:'I1',  n:'1',   texto:'Conozco los efectos de las sustancias psicoactivas (SPA) en el organismo desde una perspectiva científica.' },
+      { id:'I2',  n:'2',   texto:'Tengo conocimientos sobre la composición química de las sustancias psicoactivas de uso común (Cannabis sativa, alcohol etílico, Nicotiana tabacum y cocaína).' },
+      { id:'I2B', n:'2B',  texto:'Considero que no es necesario conocer los efectos científicos de las SPA para mi formación profesional.' },
+      { id:'I3',  n:'3',   texto:'La formación recibida en mi programa académico me ha proporcionado conocimientos científicos relacionados con las SPA.' },
+      { id:'I4',  n:'4',   texto:'Reconozco la relación entre la estructura química de algunas SPA y sus efectos biológicos en el organismo.' }
+    ]},
+  { num:'III', titulo:'Las SPA como cuestión sociocientífica (CSC)',
+    items:[
+      { id:'I5',  n:'5',   texto:'Es importante estudiar el tema de las sustancias psicoactivas en la educación superior desde un enfoque científico.' },
+      { id:'I6',  n:'6',   texto:'El estudio de las SPA en la enseñanza de la química debe realizarse desde un enfoque contextualizado y crítico.' },
+      { id:'I7',  n:'7',   texto:'La integración de las SPA en el currículo universitario requiere un enfoque interdisciplinario.' },
+      { id:'I8',  n:'8',   texto:'La educación científica puede contribuir a la comprensión y análisis crítico de las SPA.' }
+    ]},
+  { num:'IV', titulo:'Desarrollo de habilidades mediante las CSC',
+    items:[
+      { id:'I9',   n:'9',   texto:'El estudio de las SPA desde la química puede contribuir a la formación científica de los estudiantes.' },
+      { id:'I10',  n:'10',  texto:'La enseñanza de las SPA como cuestión sociocientífica beneficia el desarrollo del pensamiento crítico.' },
+      { id:'I11',  n:'11',  texto:'La integración de problemáticas sociales en la enseñanza de la química puede favorecer el aprendizaje de los contenidos científicos específicos de la asignatura.' },
+      { id:'I12',  n:'12',  texto:'El análisis científico de las SPA puede contribuir a la toma de decisiones informadas en los estudiantes.' },
+      { id:'I12B', n:'12B', texto:'El análisis científico de las SPA no aporta elementos útiles para la toma de decisiones.' }
+    ]},
+  { num:'V', titulo:'Construcción social de las percepciones sobre las SPA',
+    nota:'La construcción social plantea que la realidad social se configura a través de la interacción constante entre los individuos y su entorno, influyéndose y transformándose mutuamente (Cunliffe, 2008).',
+    items:[
+      { id:'I13', n:'13', texto:'El entorno social influye en las percepciones de los estudiantes sobre las sustancias psicoactivas.' },
+      { id:'I14', n:'14', texto:'Los grupos de pares (amigos y compañeros) influyen en las actitudes frente al consumo de sustancias psicoactivas.' },
+      { id:'I15', n:'15', texto:'Los contextos culturales pueden influir en la forma en que se perciben los riesgos asociados a las SPA.' },
+      { id:'I16', n:'16', texto:'Las experiencias compartidas entre estudiantes influyen en la construcción de percepciones sobre las SPA.' }
+    ]},
+  { num:'VI', titulo:'Factores sociocognitivos asociados a las SPA',
+    items:[
+      { id:'I17', n:'17', texto:'En mi entorno social existen ideas erróneas o mitos sobre los efectos de las sustancias psicoactivas.' },
+      { id:'I18', n:'18', texto:'Considero que la facilidad de acceso a algunas sustancias psicoactivas es un factor que favorece su consumo.' },
+      { id:'I19', n:'19', texto:'La presión social puede influir en la toma de decisiones relacionadas con el consumo de SPA.' },
+      { id:'I20', n:'20', texto:'La educación científica puede ayudar a cuestionar creencias erróneas sobre las SPA.' }
+    ]},
+  { num:'VII', titulo:'Integración curricular de las SPA en la formación en química',
+    items:[
+      { id:'I21', n:'21', texto:'El estudio de las SPA debería incluirse en los programas de Química Orgánica y Bioquímica.' },
+      { id:'I22', n:'22', texto:'El estudio de las SPA puede enriquecer los procesos de enseñanza-aprendizaje en química.' },
+      { id:'I23', n:'23', texto:'Considero que los docentes de química de mi universidad están preparados para integrar la química de las SPA en el aula.' },
+      { id:'I24', n:'24', texto:'La inclusión de las SPA en el currículo universitario fortalece la formación científica de los estudiantes.' }
+    ]}
+];
+
+// 5) Dimensión VIII. Preguntas abiertas (obligatoria:false = opcionales; cambie a true si desea exigirlas)
+const ABIERTAS = [
+  { id:'P25', n:'25', obligatoria:false, texto:'¿Qué opinión tiene acerca de la inclusión del conocimiento científico de las sustancias psicoactivas en la formación universitaria en química?' },
+  { id:'P26', n:'26', obligatoria:false, texto:'¿Qué dificultades considera que se pueden presentar para estudiar las sustancias psicoactivas como cuestiones sociocientíficas en la enseñanza de la química?' },
+  { id:'P27', n:'27', obligatoria:false, texto:'¿Qué otros temas relacionados con las SPA deberían ser estudiados desde un enfoque sociocientífico en la formación universitaria?' }
+];
+// ══════════════════════════════════════════════════════════════
+
+let enviado = false;
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function construirFormulario(){
+  const form = document.getElementById('formulario');
+  let h = '';
+
+  // Dimensión I
+  h += '<div class="dimension"><div class="dimension-cabecera"><h3>Dimensión I. Datos generales</h3></div><div class="dimension-cuerpo">';
+  DATOS_GENERALES.forEach((d,i)=>{
+    h += `<div class="campo" id="campo-DG${i}"><p class="campo-etiqueta">${esc(d.etiqueta)}${d.obligatoria?' <span class="req">*</span>':''}</p>`;
+    if(d.tipo==='texto'){
+      h += `<input type="text" id="DG${i}" placeholder="${esc(d.placeholder||'')}">`;
+    } else {
+      h += '<div class="opciones">' + d.opciones.map(op =>
+        `<label class="opcion"><input type="radio" name="DG${i}" value="${esc(op)}"><span>${esc(op)}</span></label>`).join('') + '</div>';
+    }
+    h += '<p class="error-msg">⚠️ Esta pregunta es obligatoria.</p></div>';
+  });
+  h += '</div></div>';
+
+  // Dimensiones II a VII (Likert)
+  DIMENSIONES.forEach(dim=>{
+    h += `<div class="dimension"><div class="dimension-cabecera"><h3>Dimensión ${dim.num}. ${esc(dim.titulo)}</h3>`;
+    if(dim.nota) h += `<p class="nota">${esc(dim.nota)}</p>`;
+    h += '</div><div class="dimension-cuerpo">';
+    dim.items.forEach(it=>{
+      h += `<div class="item" id="campo-${it.id}"><p class="item-texto"><span class="item-num">${it.n}.</span> ${esc(it.texto)} <span class="req">*</span></p><div class="likert">`;
+      for(let v=1; v<=5; v++){
+        h += `<input type="radio" id="${it.id}-${v}" name="${it.id}" value="${v}"><label for="${it.id}-${v}" title="${v} = ${ESCALA[v-1]}">${v}</label>`;
+      }
+      h += '</div><p class="error-msg">⚠️ Seleccione una opción (1 a 5).</p></div>';
+    });
+    h += '</div></div>';
+  });
+
+  // Dimensión VIII
+  h += '<div class="dimension"><div class="dimension-cabecera"><h3>Dimensión VIII. Preguntas abiertas</h3></div><div class="dimension-cuerpo">';
+  ABIERTAS.forEach(p=>{
+    h += `<div class="campo" id="campo-${p.id}"><p class="campo-etiqueta">${p.n}. ${esc(p.texto)}${p.obligatoria?' <span class="req">*</span>':''}</p>
+    <textarea id="${p.id}" rows="5" placeholder="Escriba su respuesta aquí…"></textarea>
+    <p class="error-msg">⚠️ Esta pregunta es obligatoria.</p></div>`;
+  });
+  h += '</div></div>';
+
+  h += '<button type="submit" class="btn btn-primario" id="btn-enviar">Enviar respuestas</button>';
+  form.innerHTML = h;
+}
+
+// ---------- Progreso ----------
+function totalRequeridas(){
+  let t = 0;
+  DATOS_GENERALES.forEach(d=>{ if(d.obligatoria) t++; });
+  DIMENSIONES.forEach(dim=>{ t += dim.items.length; });
+  return t;
+}
+function respondidasRequeridas(){
+  let n = 0;
+  DATOS_GENERALES.forEach((d,i)=>{
+    if(!d.obligatoria) return;
+    if(d.tipo==='texto'){ if(document.getElementById('DG'+i).value.trim()!=='') n++; }
+    else if(document.querySelector('input[name="DG'+i+'"]:checked')) n++;
+  });
+  DIMENSIONES.forEach(dim=>dim.items.forEach(it=>{
+    if(document.querySelector('input[name="'+it.id+'"]:checked')) n++;
+  }));
+  return n;
+}
+function actualizarProgreso(){
+  const total = totalRequeridas(), hechas = respondidasRequeridas();
+  document.getElementById('texto-progreso').textContent = hechas + ' de ' + total + ' preguntas respondidas';
+  document.getElementById('progreso-relleno').style.width = Math.round(hechas/total*100) + '%';
+}
+
+// ---------- Validación ----------
+function marcar(div, ok){ div.classList.toggle('invalida', !ok); }
+function validar(){
+  let primera = null;
+  DATOS_GENERALES.forEach((d,i)=>{
+    if(!d.obligatoria) return;
+    const div = document.getElementById('campo-DG'+i);
+    let ok;
+    if(d.tipo==='texto') ok = document.getElementById('DG'+i).value.trim()!=='';
+    else ok = !!document.querySelector('input[name="DG'+i+'"]:checked');
+    marcar(div, ok); if(!ok && !primera) primera = div;
+  });
+  DIMENSIONES.forEach(dim=>dim.items.forEach(it=>{
+    const div = document.getElementById('campo-'+it.id);
+    const ok = !!document.querySelector('input[name="'+it.id+'"]:checked');
+    marcar(div, ok); if(!ok && !primera) primera = div;
+  }));
+  ABIERTAS.forEach(p=>{
+    if(!p.obligatoria) return;
+    const div = document.getElementById('campo-'+p.id);
+    const ok = document.getElementById(p.id).value.trim()!=='';
+    marcar(div, ok); if(!ok && !primera) primera = div;
+  }));
+  if(primera){ primera.scrollIntoView({behavior:'smooth', block:'center'}); return false; }
+  return true;
+}
+
+// ---------- Recolección ----------
+function recoger(){
+  const r = {};
+  DATOS_GENERALES.forEach((d,i)=>{
+    if(d.tipo==='texto'){ r[d.etiqueta] = document.getElementById('DG'+i).value.trim(); }
+    else { const s = document.querySelector('input[name="DG'+i+'"]:checked'); r[d.etiqueta] = s ? s.value : ''; }
+  });
+  DIMENSIONES.forEach(dim=>dim.items.forEach(it=>{
+    const s = document.querySelector('input[name="'+it.id+'"]:checked');
+    r[it.id] = s ? parseInt(s.value,10) : '';
+  }));
+  ABIERTAS.forEach(p=>{ r[p.id] = document.getElementById(p.id).value.trim(); });
+  return r;
+}
+function construirClave(){
+  const c = [];
+  DATOS_GENERALES.forEach(d=>c.push({codigo:d.etiqueta, enunciado:d.etiqueta, dimension:'I. Datos generales'}));
+  DIMENSIONES.forEach(dim=>dim.items.forEach(it=>c.push({codigo:it.id, enunciado:it.texto, dimension:dim.num+'. '+dim.titulo})));
+  ABIERTAS.forEach(p=>c.push({codigo:p.id, enunciado:p.texto, dimension:'VIII. Preguntas abiertas'}));
+  return c;
+}
+
+// ---------- Envío ----------
+async function enviar(e){
+  e.preventDefault();
+  if(URL_SCRIPT.indexOf('PEGA_AQUI')!==-1){
+    alert('⚠️ Falta configurar la URL del script (Paso A-4 de las instrucciones).');
+    return;
+  }
+  if(!validar()) return;
+  const btn = document.getElementById('btn-enviar');
+  btn.disabled = true; btn.textContent = 'Enviando…';
+  try{
+    const res = await fetch(URL_SCRIPT, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({ respuestas: recoger(), clave: construirClave() })
+    });
+    const data = await res.json();
+    if(data.status!=='success') throw new Error(data.message||'Error');
+    enviado = true;
+    document.getElementById('pantalla-formulario').style.display = 'none';
+    document.getElementById('pantalla-gracias').style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }catch(err){
+    alert('⚠️ No se pudo enviar. Verifique su conexión e inténtelo de nuevo.');
+    btn.disabled = false; btn.textContent = 'Enviar respuestas';
+  }
+}
+
+// ---------- Inicio ----------
+document.addEventListener('DOMContentLoaded', ()=>{
+  construirFormulario();
+  actualizarProgreso();
+
+  const check = document.getElementById('check-consentimiento');
+  const btnComenzar = document.getElementById('btn-comenzar');
+  check.addEventListener('change', ()=>{ btnComenzar.disabled = !check.checked; });
+  btnComenzar.addEventListener('click', ()=>{
+    document.getElementById('pantalla-consentimiento').style.display = 'none';
+    document.getElementById('pantalla-formulario').style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  const form = document.getElementById('formulario');
+  form.addEventListener('change', e=>{
+    const cont = e.target.closest('.campo,.item');
+    if(cont) cont.classList.remove('invalida');
+    actualizarProgreso();
+  });
+  form.addEventListener('input', e=>{
+    const cont = e.target.closest('.campo,.item');
+    if(cont) cont.classList.remove('invalida');
+    actualizarProgreso();
+  });
+  form.addEventListener('submit', enviar);
+
+  // Evita pérdida accidental de respuestas
+  window.addEventListener('beforeunload', e=>{
+    if(enviado) return;
+    const pant = document.getElementById('pantalla-formulario');
+    if(pant.style.display!=='none' && respondidasRequeridas()>0){ e.preventDefault(); e.returnValue=''; }
+  });
+});
+</script>
+</body>
+</html>
