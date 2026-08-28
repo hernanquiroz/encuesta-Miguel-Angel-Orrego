@@ -25,6 +25,7 @@ header h1{font-size:1.02rem;font-weight:600;line-height:1.45;border-top:1px soli
 .contacto-previo{font-size:.82rem;color:var(--gris);margin-top:14px;border-top:1px solid var(--borde);padding-top:10px}
 .consentimiento{display:flex;gap:10px;align-items:flex-start;background:var(--suave);border:1.5px solid var(--primario2);border-radius:10px;padding:14px;margin:16px 0;font-weight:600;cursor:pointer;font-size:.95rem}
 .consentimiento input{width:20px;height:20px;accent-color:var(--primario);flex-shrink:0;margin-top:2px}
+.sello-listo{display:none;background:#d1fae5;color:#065f46;border:1px solid #6ee7b7;border-radius:8px;padding:8px 14px;font-size:.85rem;font-weight:600;margin-bottom:12px;text-align:center}
 .btn{display:block;width:100%;padding:14px;border:none;border-radius:10px;font-size:1.02rem;font-weight:700;cursor:pointer}
 .btn-primario{background:var(--primario);color:#fff}
 .btn-primario:hover:enabled{background:#16327a}
@@ -51,7 +52,7 @@ header h1{font-size:1.02rem;font-weight:600;line-height:1.45;border-top:1px soli
 .opcion{display:flex;align-items:center;gap:8px;border:1.5px solid var(--borde);border-radius:999px;padding:8px 14px;cursor:pointer;font-size:.9rem;background:#fff;transition:.15s}
 .opcion:hover{border-color:var(--primario2)}
 .opcion input{accent-color:var(--primario);width:16px;height:16px}
-.opcion:has(input:checked){background:var(--suave);border-color:var(--primario2)}
+.opcion-seleccionada{background:var(--suave);border-color:var(--primario2)}
 input[type=text],textarea{width:100%;padding:11px 13px;border:1.5px solid var(--borde);border-radius:8px;font-size:.95rem;font-family:inherit}
 textarea{resize:vertical;min-height:100px}
 input:focus,textarea:focus{outline:none;border-color:var(--primario2);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
@@ -64,7 +65,6 @@ input:focus,textarea:focus{outline:none;border-color:var(--primario2);box-shadow
 .likert label{flex:1;text-align:center;padding:10px 0;border:1.5px solid var(--borde);border-radius:8px;font-weight:700;font-size:.95rem;cursor:pointer;background:#fff;transition:.15s;color:#334155}
 .likert label:hover{border-color:var(--primario2);color:var(--primario2)}
 .likert input:checked+label{background:var(--primario);border-color:var(--primario);color:#fff}
-.item.invalida .likert label{border-color:var(--error)}
 .error-msg{display:none;color:var(--error);font-size:.82rem;margin-top:8px}
 .invalida .error-msg{display:block}
 .invalida .campo-etiqueta,.invalida .item-texto{color:var(--error)}
@@ -83,6 +83,15 @@ header{padding:20px 14px}
 </style>
 </head>
 <body>
+<script>
+window.onerror=function(msg){
+  var d=document.createElement('div');
+  d.style.cssText='background:#dc2626;color:#fff;padding:10px;font-size:13px;position:fixed;top:0;left:0;right:0;z-index:9999;text-align:center';
+  d.textContent='ERROR EN EL CODIGO: '+msg+' | Recopie el archivo completo desde el chat (no use Word).';
+  document.body.appendChild(d);
+};
+</script>
+
 <div class="contenedor">
 
   <header>
@@ -94,13 +103,14 @@ header{padding:20px 14px}
 
   <div class="tarjeta">
 
-    <!-- ════════ VISTA 1: CONSENTIMIENTO ════════ -->
+    <!-- VISTA 1: CONSENTIMIENTO -->
     <section class="seccion" id="pantalla-consentimiento">
+      <div class="sello-listo" id="sello-listo">✓ Sistema listo — puede responder el cuestionario</div>
       <div class="intro">
         <h2>Estimado(a) estudiante:</h2>
         <p>El presente cuestionario tiene como propósito analizar las percepciones de los estudiantes sobre las sustancias psicoactivas (SPA) de uso frecuente (legales e ilegales): <em>Cannabis sativa</em>, alcohol etílico, <em>Nicotiana tabacum</em> y cocaína, desde un enfoque contextualizado que las relaciona como cuestiones sociocientíficas (CSC), y su posible integración en los procesos de enseñanza-aprendizaje de las asignaturas de Química Orgánica y Bioquímica en la educación superior.</p>
         <div class="definicion">
-          Las cuestiones sociocientíficas (CSC) son problemas complejos y controversiales que presentan una base científica o tecnológica, pero cuyas soluciones o impactos generan debate al involucrar factores éticos, políticos, económicos, sociales y ambientales (Torres Merchán et&nbsp;al., 2023).
+          Las cuestiones sociocientíficas (CSC) son problemas complejos y controversiales que presentan una base científica o tecnológica, pero cuyas soluciones o impactos generan debate al involucrar factores éticos, políticos, económicos, sociales y ambientales (Torres Merchán et al., 2023).
         </div>
         <p><strong>Sus derechos como participante:</strong></p>
         <ul class="derechos">
@@ -125,7 +135,7 @@ header{padding:20px 14px}
       </div>
     </section>
 
-    <!-- ════════ VISTA 2: CUESTIONARIO ════════ -->
+    <!-- VISTA 2: CUESTIONARIO -->
     <section id="pantalla-formulario" style="display:none">
       <div class="barra-fija">
         <div class="progreso-info">
@@ -149,12 +159,11 @@ header{padding:20px 14px}
         </div>
 
         <form id="formulario" novalidate autocomplete="off">
-          <!-- El contenido se genera automáticamente con el JS de abajo -->
         </form>
       </div>
     </section>
 
-    <!-- ════════ VISTA 3: AGRADECIMIENTO ════════ -->
+    <!-- VISTA 3: AGRADECIMIENTO -->
     <section class="gracias" id="pantalla-gracias" style="display:none">
       <div class="icono">✅</div>
       <h2>¡Gracias por su participación!</h2>
@@ -171,25 +180,20 @@ header{padding:20px 14px}
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════════
-// 1) ÚNICA CONFIGURACIÓN NECESARIA: pegue aquí la URL de su Apps Script (Paso A-4)
-const URL_SCRIPT = 'PEGA_AQUI_LA_URL_DEL_SCRIPT';
+var URL_SCRIPT = 'PEGA_AQUI_LA_URL_DEL_SCRIPT';
 
-// 2) Escala Likert
-const ESCALA = ['Totalmente en desacuerdo','En desacuerdo','Ni de acuerdo ni en desacuerdo','De acuerdo','Totalmente de acuerdo'];
+var ESCALA = ['Totalmente en desacuerdo','En desacuerdo','Ni de acuerdo ni en desacuerdo','De acuerdo','Totalmente de acuerdo'];
 
-// 3) Dimensión I. Datos generales
-const DATOS_GENERALES = [
-  { tipo:'texto',  etiqueta:'Programa académico', obligatoria:true,  placeholder:'Escriba su programa académico' },
-  { tipo:'opcion', etiqueta:'Nivel educativo',    obligatoria:true,  opciones:['Pregrado','Posgrado'] },
-  { tipo:'opcion', etiqueta:'Asignatura',         obligatoria:true,  opciones:['Química Orgánica','Bioquímica','Ambas'] },
-  { tipo:'texto',  etiqueta:'Semestre',           obligatoria:true,  placeholder:'Ej.: 4' },
-  { tipo:'opcion', etiqueta:'Rango de edad',      obligatoria:true,  opciones:['17-19','20-22','23-25','26 o más'] },
-  { tipo:'opcion', etiqueta:'Sexo / Género',      obligatoria:true,  opciones:['Femenino','Masculino','Otro','Prefiero no responder'] }
+var DATOS_GENERALES = [
+  { tipo:'texto',  etiqueta:'Programa académico', obligatoria:true, placeholder:'Escriba su programa académico' },
+  { tipo:'opcion', etiqueta:'Nivel educativo',    obligatoria:true, opciones:['Pregrado','Posgrado'] },
+  { tipo:'opcion', etiqueta:'Asignatura',         obligatoria:true, opciones:['Química Orgánica','Bioquímica','Ambas'] },
+  { tipo:'texto',  etiqueta:'Semestre',           obligatoria:true, placeholder:'Ej.: 4' },
+  { tipo:'opcion', etiqueta:'Rango de edad',      obligatoria:true, opciones:['17-19','20-22','23-25','26 o más'] },
+  { tipo:'opcion', etiqueta:'Sexo / Género',      obligatoria:true, opciones:['Femenino','Masculino','Otro','Prefiero no responder'] }
 ];
 
-// 4) Dimensiones II a VII (ítems Likert — numeración original del instrumento)
-const DIMENSIONES = [
+var DIMENSIONES = [
   { num:'II', titulo:'Conocimiento científico autopercibido sobre las SPA',
     nota:'Se entiende por conocimiento científico un conjunto organizado, verificable y sistemático de saberes que se adquieren mediante un proceso metódico basado en la observación, el estudio, la experimentación y el análisis de fenómenos (Fernández, 2023).',
     items:[
@@ -238,57 +242,53 @@ const DIMENSIONES = [
     ]}
 ];
 
-// 5) Dimensión VIII. Preguntas abiertas (obligatoria:false = opcionales; cambie a true si desea exigirlas)
-const ABIERTAS = [
+var ABIERTAS = [
   { id:'P25', n:'25', obligatoria:false, texto:'¿Qué opinión tiene acerca de la inclusión del conocimiento científico de las sustancias psicoactivas en la formación universitaria en química?' },
   { id:'P26', n:'26', obligatoria:false, texto:'¿Qué dificultades considera que se pueden presentar para estudiar las sustancias psicoactivas como cuestiones sociocientíficas en la enseñanza de la química?' },
   { id:'P27', n:'27', obligatoria:false, texto:'¿Qué otros temas relacionados con las SPA deberían ser estudiados desde un enfoque sociocientífico en la formación universitaria?' }
 ];
-// ══════════════════════════════════════════════════════════════
 
-let enviado = false;
+var enviado = false;
 
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 function construirFormulario(){
-  const form = document.getElementById('formulario');
-  let h = '';
+  var form = document.getElementById('formulario');
+  var h = '';
 
-  // Dimensión I
   h += '<div class="dimension"><div class="dimension-cabecera"><h3>Dimensión I. Datos generales</h3></div><div class="dimension-cuerpo">';
-  DATOS_GENERALES.forEach((d,i)=>{
-    h += `<div class="campo" id="campo-DG${i}"><p class="campo-etiqueta">${esc(d.etiqueta)}${d.obligatoria?' <span class="req">*</span>':''}</p>`;
+  DATOS_GENERALES.forEach(function(d,i){
+    h += '<div class="campo" id="campo-DG'+i+'"><p class="campo-etiqueta">'+esc(d.etiqueta)+(d.obligatoria?' <span class="req">*</span>':'')+'</p>';
     if(d.tipo==='texto'){
-      h += `<input type="text" id="DG${i}" placeholder="${esc(d.placeholder||'')}">`;
+      h += '<input type="text" id="DG'+i+'" placeholder="'+esc(d.placeholder||'')+'">';
     } else {
-      h += '<div class="opciones">' + d.opciones.map(op =>
-        `<label class="opcion"><input type="radio" name="DG${i}" value="${esc(op)}"><span>${esc(op)}</span></label>`).join('') + '</div>';
+      h += '<div class="opciones">' + d.opciones.map(function(op){
+        return '<label class="opcion"><input type="radio" name="DG'+i+'" value="'+esc(op)+'"><span>'+esc(op)+'</span></label>';
+      }).join('') + '</div>';
     }
-    h += '<p class="error-msg">⚠️ Esta pregunta es obligatoria.</p></div>';
+    h += '<p class="error-msg">Esta pregunta es obligatoria.</p></div>';
   });
   h += '</div></div>';
 
-  // Dimensiones II a VII (Likert)
-  DIMENSIONES.forEach(dim=>{
-    h += `<div class="dimension"><div class="dimension-cabecera"><h3>Dimensión ${dim.num}. ${esc(dim.titulo)}</h3>`;
-    if(dim.nota) h += `<p class="nota">${esc(dim.nota)}</p>`;
+  DIMENSIONES.forEach(function(dim){
+    h += '<div class="dimension"><div class="dimension-cabecera"><h3>Dimensión '+dim.num+'. '+esc(dim.titulo)+'</h3>';
+    if(dim.nota) h += '<p class="nota">'+esc(dim.nota)+'</p>';
     h += '</div><div class="dimension-cuerpo">';
-    dim.items.forEach(it=>{
-      h += `<div class="item" id="campo-${it.id}"><p class="item-texto"><span class="item-num">${it.n}.</span> ${esc(it.texto)} <span class="req">*</span></p><div class="likert">`;
-      for(let v=1; v<=5; v++){
-        h += `<input type="radio" id="${it.id}-${v}" name="${it.id}" value="${v}"><label for="${it.id}-${v}" title="${v} = ${ESCALA[v-1]}">${v}</label>`;
+    dim.items.forEach(function(it){
+      h += '<div class="item" id="campo-'+it.id+'"><p class="item-texto"><span class="item-num">'+it.n+'.</span> '+esc(it.texto)+' <span class="req">*</span></p><div class="likert">';
+      for(var v=1; v<=5; v++){
+        h += '<input type="radio" id="'+it.id+'-'+v+'" name="'+it.id+'" value="'+v+'"><label for="'+it.id+'-'+v+'" title="'+v+' = '+ESCALA[v-1]+'">'+v+'</label>';
       }
-      h += '</div><p class="error-msg">⚠️ Seleccione una opción (1 a 5).</p></div>';
+      h += '</div><p class="error-msg">Seleccione una opción (1 a 5).</p></div>';
     });
     h += '</div></div>';
   });
 
-  // Dimensión VIII
   h += '<div class="dimension"><div class="dimension-cabecera"><h3>Dimensión VIII. Preguntas abiertas</h3></div><div class="dimension-cuerpo">';
-  ABIERTAS.forEach(p=>{
-    h += `<div class="campo" id="campo-${p.id}"><p class="campo-etiqueta">${p.n}. ${esc(p.texto)}${p.obligatoria?' <span class="req">*</span>':''}</p>
-    <textarea id="${p.id}" rows="5" placeholder="Escriba su respuesta aquí…"></textarea>
-    <p class="error-msg">⚠️ Esta pregunta es obligatoria.</p></div>`;
+  ABIERTAS.forEach(function(p){
+    h += '<div class="campo" id="campo-'+p.id+'"><p class="campo-etiqueta">'+p.n+'. '+esc(p.texto)+(p.obligatoria?' <span class="req">*</span>':'')+'</p>'+
+    '<textarea id="'+p.id+'" rows="5" placeholder="Escriba su respuesta aquí…"></textarea>'+
+    '<p class="error-msg">Esta pregunta es obligatoria.</p></div>';
   });
   h += '</div></div>';
 
@@ -296,139 +296,150 @@ function construirFormulario(){
   form.innerHTML = h;
 }
 
-// ---------- Progreso ----------
 function totalRequeridas(){
-  let t = 0;
-  DATOS_GENERALES.forEach(d=>{ if(d.obligatoria) t++; });
-  DIMENSIONES.forEach(dim=>{ t += dim.items.length; });
+  var t = 0;
+  DATOS_GENERALES.forEach(function(d){ if(d.obligatoria) t++; });
+  DIMENSIONES.forEach(function(dim){ t += dim.items.length; });
   return t;
 }
 function respondidasRequeridas(){
-  let n = 0;
-  DATOS_GENERALES.forEach((d,i)=>{
+  var n = 0;
+  DATOS_GENERALES.forEach(function(d,i){
     if(!d.obligatoria) return;
     if(d.tipo==='texto'){ if(document.getElementById('DG'+i).value.trim()!=='') n++; }
     else if(document.querySelector('input[name="DG'+i+'"]:checked')) n++;
   });
-  DIMENSIONES.forEach(dim=>dim.items.forEach(it=>{
-    if(document.querySelector('input[name="'+it.id+'"]:checked')) n++;
-  }));
+  DIMENSIONES.forEach(function(dim){
+    dim.items.forEach(function(it){
+      if(document.querySelector('input[name="'+it.id+'"]:checked')) n++;
+    });
+  });
   return n;
 }
 function actualizarProgreso(){
-  const total = totalRequeridas(), hechas = respondidasRequeridas();
+  var total = totalRequeridas(), hechas = respondidasRequeridas();
   document.getElementById('texto-progreso').textContent = hechas + ' de ' + total + ' preguntas respondidas';
   document.getElementById('progreso-relleno').style.width = Math.round(hechas/total*100) + '%';
 }
 
-// ---------- Validación ----------
 function marcar(div, ok){ div.classList.toggle('invalida', !ok); }
 function validar(){
-  let primera = null;
-  DATOS_GENERALES.forEach((d,i)=>{
+  var primera = null;
+  DATOS_GENERALES.forEach(function(d,i){
     if(!d.obligatoria) return;
-    const div = document.getElementById('campo-DG'+i);
-    let ok;
+    var div = document.getElementById('campo-DG'+i);
+    var ok;
     if(d.tipo==='texto') ok = document.getElementById('DG'+i).value.trim()!=='';
     else ok = !!document.querySelector('input[name="DG'+i+'"]:checked');
     marcar(div, ok); if(!ok && !primera) primera = div;
   });
-  DIMENSIONES.forEach(dim=>dim.items.forEach(it=>{
-    const div = document.getElementById('campo-'+it.id);
-    const ok = !!document.querySelector('input[name="'+it.id+'"]:checked');
-    marcar(div, ok); if(!ok && !primera) primera = div;
-  }));
-  ABIERTAS.forEach(p=>{
+  DIMENSIONES.forEach(function(dim){
+    dim.items.forEach(function(it){
+      var div = document.getElementById('campo-'+it.id);
+      var ok = !!document.querySelector('input[name="'+it.id+'"]:checked');
+      marcar(div, ok); if(!ok && !primera) primera = div;
+    });
+  });
+  ABIERTAS.forEach(function(p){
     if(!p.obligatoria) return;
-    const div = document.getElementById('campo-'+p.id);
-    const ok = document.getElementById(p.id).value.trim()!=='';
+    var div = document.getElementById('campo-'+p.id);
+    var ok = document.getElementById(p.id).value.trim()!=='';
     marcar(div, ok); if(!ok && !primera) primera = div;
-  }));
+  });
   if(primera){ primera.scrollIntoView({behavior:'smooth', block:'center'}); return false; }
   return true;
 }
 
-// ---------- Recolección ----------
 function recoger(){
-  const r = {};
-  DATOS_GENERALES.forEach((d,i)=>{
+  var r = {};
+  DATOS_GENERALES.forEach(function(d,i){
     if(d.tipo==='texto'){ r[d.etiqueta] = document.getElementById('DG'+i).value.trim(); }
-    else { const s = document.querySelector('input[name="DG'+i+'"]:checked'); r[d.etiqueta] = s ? s.value : ''; }
+    else { var s = document.querySelector('input[name="DG'+i+'"]:checked'); r[d.etiqueta] = s ? s.value : ''; }
   });
-  DIMENSIONES.forEach(dim=>dim.items.forEach(it=>{
-    const s = document.querySelector('input[name="'+it.id+'"]:checked');
-    r[it.id] = s ? parseInt(s.value,10) : '';
-  }));
-  ABIERTAS.forEach(p=>{ r[p.id] = document.getElementById(p.id).value.trim(); });
+  DIMENSIONES.forEach(function(dim){
+    dim.items.forEach(function(it){
+      var s = document.querySelector('input[name="'+it.id+'"]:checked');
+      r[it.id] = s ? parseInt(s.value,10) : '';
+    });
+  });
+  ABIERTAS.forEach(function(p){ r[p.id] = document.getElementById(p.id).value.trim(); });
   return r;
 }
 function construirClave(){
-  const c = [];
-  DATOS_GENERALES.forEach(d=>c.push({codigo:d.etiqueta, enunciado:d.etiqueta, dimension:'I. Datos generales'}));
-  DIMENSIONES.forEach(dim=>dim.items.forEach(it=>c.push({codigo:it.id, enunciado:it.texto, dimension:dim.num+'. '+dim.titulo})));
-  ABIERTAS.forEach(p=>c.push({codigo:p.id, enunciado:p.texto, dimension:'VIII. Preguntas abiertas'}));
+  var c = [];
+  DATOS_GENERALES.forEach(function(d){ c.push({codigo:d.etiqueta, enunciado:d.etiqueta, dimension:'I. Datos generales'}); });
+  DIMENSIONES.forEach(function(dim){
+    dim.items.forEach(function(it){ c.push({codigo:it.id, enunciado:it.texto, dimension:dim.num+'. '+dim.titulo}); });
+  });
+  ABIERTAS.forEach(function(p){ c.push({codigo:p.id, enunciado:p.texto, dimension:'VIII. Preguntas abiertas'}); });
   return c;
 }
 
-// ---------- Envío ----------
-async function enviar(e){
+function enviar(e){
   e.preventDefault();
   if(URL_SCRIPT.indexOf('PEGA_AQUI')!==-1){
-    alert('⚠️ Falta configurar la URL del script (Paso A-4 de las instrucciones).');
+    alert('Falta configurar la URL del script (Paso A-4 de las instrucciones).');
     return;
   }
   if(!validar()) return;
-  const btn = document.getElementById('btn-enviar');
+  var btn = document.getElementById('btn-enviar');
   btn.disabled = true; btn.textContent = 'Enviando…';
-  try{
-    const res = await fetch(URL_SCRIPT, {
-      method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify({ respuestas: recoger(), clave: construirClave() })
-    });
-    const data = await res.json();
+  fetch(URL_SCRIPT, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ respuestas: recoger(), clave: construirClave() })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){
     if(data.status!=='success') throw new Error(data.message||'Error');
     enviado = true;
     document.getElementById('pantalla-formulario').style.display = 'none';
     document.getElementById('pantalla-gracias').style.display = 'block';
     window.scrollTo({top:0, behavior:'smooth'});
-  }catch(err){
-    alert('⚠️ No se pudo enviar. Verifique su conexión e inténtelo de nuevo.');
+  })
+  .catch(function(){
+    alert('No se pudo enviar. Verifique su conexión e inténtelo de nuevo.');
     btn.disabled = false; btn.textContent = 'Enviar respuestas';
-  }
+  });
 }
 
-// ---------- Inicio ----------
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', function(){
   construirFormulario();
   actualizarProgreso();
+  document.getElementById('sello-listo').style.display = 'block';
 
-  const check = document.getElementById('check-consentimiento');
-  const btnComenzar = document.getElementById('btn-comenzar');
-  check.addEventListener('change', ()=>{ btnComenzar.disabled = !check.checked; });
-  btnComenzar.addEventListener('click', ()=>{
+  var check = document.getElementById('check-consentimiento');
+  var btnComenzar = document.getElementById('btn-comenzar');
+  check.addEventListener('change', function(){ btnComenzar.disabled = !check.checked; });
+  btnComenzar.addEventListener('click', function(){
     document.getElementById('pantalla-consentimiento').style.display = 'none';
     document.getElementById('pantalla-formulario').style.display = 'block';
     window.scrollTo({top:0, behavior:'smooth'});
   });
 
-  const form = document.getElementById('formulario');
-  form.addEventListener('change', e=>{
-    const cont = e.target.closest('.campo,.item');
+  var form = document.getElementById('formulario');
+  form.addEventListener('change', function(e){
+    var cont = e.target.closest('.campo') || e.target.closest('.item');
     if(cont) cont.classList.remove('invalida');
+    if(e.target.name){
+      var grupo = form.querySelectorAll('input[name="'+e.target.name+'"]');
+      grupo.forEach(function(g){
+        var lab = g.parentElement;
+        if(lab && lab.classList.contains('opcion')) lab.classList.toggle('opcion-seleccionada', g.checked);
+      });
+    }
     actualizarProgreso();
   });
-  form.addEventListener('input', e=>{
-    const cont = e.target.closest('.campo,.item');
+  form.addEventListener('input', function(e){
+    var cont = e.target.closest('.campo') || e.target.closest('.item');
     if(cont) cont.classList.remove('invalida');
     actualizarProgreso();
   });
   form.addEventListener('submit', enviar);
 
-  // Evita pérdida accidental de respuestas
-  window.addEventListener('beforeunload', e=>{
+  window.addEventListener('beforeunload', function(e){
     if(enviado) return;
-    const pant = document.getElementById('pantalla-formulario');
+    var pant = document.getElementById('pantalla-formulario');
     if(pant.style.display!=='none' && respondidasRequeridas()>0){ e.preventDefault(); e.returnValue=''; }
   });
 });
