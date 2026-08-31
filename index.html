@@ -36,6 +36,7 @@ header h1{font-size:1.02rem;font-weight:600;line-height:1.45;border-top:1px soli
 .progreso-pista{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden}
 .progreso-relleno{height:100%;width:0;background:linear-gradient(90deg,var(--primario2),#0d9488);border-radius:4px;transition:width .3s}
 .instrucciones{background:var(--suave);border-radius:10px;padding:14px 16px;margin:16px 0;font-size:.9rem}
+.aviso-obligatorio{background:#fef2f2;border:1.5px solid #fecaca;color:#991b1b;border-radius:8px;padding:10px 14px;font-size:.9rem;font-weight:600;margin:0 0 16px 0;text-align:center}
 .escala-chips{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .chip{display:flex;gap:10px;align-items:center}
 .chip b{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:50%;background:var(--primario);color:#fff;font-size:.85rem;flex-shrink:0}
@@ -146,6 +147,7 @@ window.onerror=function(msg){
       </div>
 
       <div class="seccion">
+        <div class="aviso-obligatorio">⚠️ Todas las preguntas del cuestionario son de respuesta obligatoria. No podrá enviar sus respuestas hasta completarlas todas.</div>
         <div class="instrucciones">
           <strong>Instrucciones:</strong> A continuación encontrará una serie de afirmaciones.
           Seleccione el número que corresponde a su nivel de acuerdo o desacuerdo, según la siguiente escala:
@@ -180,7 +182,8 @@ window.onerror=function(msg){
 </div>
 
 <script>
-var URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzuQ59OhgZH48J0-bs4baFGnN9JwEuIRFfgLjAu0J92jrqKhD-tsAp0rzAXwwYCm3Hd/exec';
+// ⚠️ ⚠️ ⚠️ ÚNICO CAMBIO NECESARIO: pegue aquí SU URL que termina en /exec ⚠️ ⚠️ ⚠️
+var URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzuQ59OhgZH48J0-bs4baFGnN9JwEuIRFfgLjAu0J92jrqKhD-tsAp0rzAXwwYCm3Hd/exec'';
 
 var ESCALA = ['Totalmente en desacuerdo','En desacuerdo','Ni de acuerdo ni en desacuerdo','De acuerdo','Totalmente de acuerdo'];
 
@@ -242,10 +245,11 @@ var DIMENSIONES = [
     ]}
 ];
 
+// ⚠️ Las 3 preguntas abiertas ahora son OBLIGATORIAS (obligatoria:true)
 var ABIERTAS = [
-  { id:'P25', n:'25', obligatoria:false, texto:'¿Qué opinión tiene acerca de la inclusión del conocimiento científico de las sustancias psicoactivas en la formación universitaria en química?' },
-  { id:'P26', n:'26', obligatoria:false, texto:'¿Qué dificultades considera que se pueden presentar para estudiar las sustancias psicoactivas como cuestiones sociocientíficas en la enseñanza de la química?' },
-  { id:'P27', n:'27', obligatoria:false, texto:'¿Qué otros temas relacionados con las SPA deberían ser estudiados desde un enfoque sociocientífico en la formación universitaria?' }
+  { id:'P25', n:'25', obligatoria:true, texto:'¿Qué opinión tiene acerca de la inclusión del conocimiento científico de las sustancias psicoactivas en la formación universitaria en química?' },
+  { id:'P26', n:'26', obligatoria:true, texto:'¿Qué dificultades considera que se pueden presentar para estudiar las sustancias psicoactivas como cuestiones sociocientíficas en la enseñanza de la química?' },
+  { id:'P27', n:'27', obligatoria:true, texto:'¿Qué otros temas relacionados con las SPA deberían ser estudiados desde un enfoque sociocientífico en la formación universitaria?' }
 ];
 
 var enviado = false;
@@ -300,6 +304,7 @@ function totalRequeridas(){
   var t = 0;
   DATOS_GENERALES.forEach(function(d){ if(d.obligatoria) t++; });
   DIMENSIONES.forEach(function(dim){ t += dim.items.length; });
+  ABIERTAS.forEach(function(p){ if(p.obligatoria) t++; });
   return t;
 }
 function respondidasRequeridas(){
@@ -313,6 +318,9 @@ function respondidasRequeridas(){
     dim.items.forEach(function(it){
       if(document.querySelector('input[name="'+it.id+'"]:checked')) n++;
     });
+  });
+  ABIERTAS.forEach(function(p){
+    if(p.obligatoria && document.getElementById(p.id).value.trim()!=='') n++;
   });
   return n;
 }
@@ -378,7 +386,7 @@ function construirClave(){
 function enviar(e){
   e.preventDefault();
   if(URL_SCRIPT.indexOf('PEGA_AQUI')!==-1){
-    alert('Falta configurar la URL del script (Paso A-4 de las instrucciones).');
+    alert('Falta configurar la URL del script (vea la linea var URL_SCRIPT).');
     return;
   }
   if(!validar()) return;
