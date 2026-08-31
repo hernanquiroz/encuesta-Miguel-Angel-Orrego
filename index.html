@@ -182,8 +182,8 @@ window.onerror=function(msg){
 </div>
 
 <script>
-// ⚠️ ⚠️ ⚠️ ÚNICO CAMBIO NECESARIO: pegue aquí SU URL que termina en /exec ⚠️ ⚠️ ⚠️
-var URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzuQ59OhgZH48J0-bs4baFGnN9JwEuIRFfgLjAu0J92jrqKhD-tsAp0rzAXwwYCm3Hd/exec'';
+// ✅ URL del receptor ya incrustada — NO MODIFICAR ESTA LÍNEA
+var URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzuQ59OhgZH48J0-bs4baFGnN9JwEuIRFfgLjAu0J92jrqKhD-tsAp0rzAXwwYCm3Hd/exec';
 
 var ESCALA = ['Totalmente en desacuerdo','En desacuerdo','Ni de acuerdo ni en desacuerdo','De acuerdo','Totalmente de acuerdo'];
 
@@ -245,7 +245,7 @@ var DIMENSIONES = [
     ]}
 ];
 
-// ⚠️ Las 3 preguntas abiertas ahora son OBLIGATORIAS (obligatoria:true)
+// Las 3 preguntas abiertas son OBLIGATORIAS
 var ABIERTAS = [
   { id:'P25', n:'25', obligatoria:true, texto:'¿Qué opinión tiene acerca de la inclusión del conocimiento científico de las sustancias psicoactivas en la formación universitaria en química?' },
   { id:'P26', n:'26', obligatoria:true, texto:'¿Qué dificultades considera que se pueden presentar para estudiar las sustancias psicoactivas como cuestiones sociocientíficas en la enseñanza de la química?' },
